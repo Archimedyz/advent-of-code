@@ -7,13 +7,12 @@ fs.readFile(__dirname + '/input.txt', 'utf8' , (err, data) => {
         console.error(err);
         return;
     }
-    input = data;
 
     var floor = 0;
 
-    for (var i = 0; i < input.length; ++i)
+    for (var i = 0; i < data.length; ++i)
     {
-        char = input[i];
+        char = data[i];
         floor += char == '(' ? 1 : -1;
 
         if (floor < 0)
