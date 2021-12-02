@@ -1,6 +1,8 @@
 const fs = require('fs');
 
-function stringDiff(str) {
+function computeLengths(str) {
+    // memory length is 0
+    let memoryLength = 0;
     // start at 2 to include the start and end quotes
     let codeLength = 2;
     // we can start the encoded length at 6, since we
@@ -10,6 +12,11 @@ function stringDiff(str) {
 
     for (let i = 0; i < str.length; ++i) {
         let c = str[i];
+
+        // we can increment the memory length since each
+        // iteration from the top of this loop is for a character
+        // in memory.
+        memoryLength += 1;
 
         if (c != '\\') {
             codeLength += 1;
@@ -36,7 +43,11 @@ function stringDiff(str) {
         encodedLength += 5; // only escape the first backslash
     }
 
-    return encodedLength - codeLength;
+    return {
+        memoryLength: memoryLength,
+        codeLength: codeLength,
+        encodedLength: encodedLength
+    };
 }
 
 fs.readFile(__dirname + '/input.txt', 'utf8', (err, data) => {
@@ -48,11 +59,14 @@ fs.readFile(__dirname + '/input.txt', 'utf8', (err, data) => {
     
     let rows = data.split('\r\n');
 
-    let diff = 0;
+    let res1 = 0, res2 = 0;
     for (let i = 0; i < rows.length; ++i) {
-        diff += stringDiff(rows[i]);
+        cl = computeLengths(rows[i]);
+        res1 += cl.codeLength - cl.memoryLength;
+        res2 += cl.encodedLength - cl.codeLength;
     }
 
-    console.log("OUTPUT >> " + diff);
+    console.log("OUTPUT 1 >> " + res1);
+    console.log("OUTPUT 2 >> " + res2);
 });
 
