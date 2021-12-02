@@ -43,8 +43,9 @@ function parseEdge(str) {
     };
 }
 
-function computeDist(ring) {
+function computeDist(ring, findMin) {
     let minDist = null;
+    let maxDist = null;
     let ringDist = 0;
     let rLength = ring.length;
 
@@ -63,6 +64,10 @@ function computeDist(ring) {
         if (minDist == null || minDist > dist) {
             minDist = dist;
         }
+
+        if (maxDist == null || maxDist < dist) {
+            maxDist = dist;
+        }
     }
 
     // finally, we should consider the distance
@@ -79,11 +84,15 @@ function computeDist(ring) {
         minDist = dist;
     }
 
-    return ringDist - minDist;
+    if (maxDist == null || maxDist < dist) {
+        maxDist = dist;
+    }
+
+    return  ringDist - (findMin ? maxDist : minDist);
 }
 
-function getRingDist(ring) {
-    let maxDist = null;
+function getRingDist(ring, findMin) {
+    let optimalDist = null;
 
     for (let key in graph) {
         if (ring.includes(key)) {
@@ -91,25 +100,27 @@ function getRingDist(ring) {
         }
 
         ring.push(key);
-        let dist = getRingDist(ring);
+        let dist = getRingDist(ring, findMin);
         ring.pop();
 
-        if (maxDist == null || maxDist < dist) {
-            maxDist = dist
+        if (optimalDist == null || 
+            (findMin && optimalDist > dist) ||
+            (!findMin && optimalDist < dist)) {
+            optimalDist = dist
         }
     }
 
-    if (maxDist == null) {
-        maxDist = computeDist(ring);
+    if (optimalDist == null) {
+        optimalDist = computeDist(ring, findMin);
     }
 
-    return maxDist;
+    return optimalDist;
 }
 
-function getDist() {
+function getDist(findMin) {
     let ring = [aNode.id];
 
-    return getRingDist(ring);
+    return getRingDist(ring, findMin);
 }
 
 fs.readFile(__dirname + '/input.txt', 'utf8', (err, data) => {
@@ -125,5 +136,6 @@ fs.readFile(__dirname + '/input.txt', 'utf8', (err, data) => {
         parseEdge(rows[i]);
     }
     
-    console.log("OUTPUT >> " + getDist());
+    console.log("OUTPUT 1 >> " + getDist(true));
+    console.log("OUTPUT 2 >> " + getDist(false));
 });

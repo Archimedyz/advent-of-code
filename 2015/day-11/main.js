@@ -93,4 +93,8 @@ function findNextPassword(str) {
     return res;
 }
 
-console.log("OUTPUT >> " + findNextPassword(input));
+let res1 = findNextPassword(input);
+let res2 = findNextPassword(res1);
+
+console.log("OUTPUT 1 >> " + res1);
+console.log("OUTPUT 2 >> " + res2);

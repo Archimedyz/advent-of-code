@@ -24,9 +24,15 @@ function lookAndSay(str) {
     return result;
 }
 
-let res = input;
-for (let i = 0; i < iterations; ++i) {
-    res = lookAndSay(res);
+let res1 = input;
+for (let i = 0; i < 40; ++i) {
+    res1 = lookAndSay(res1);
 }
 
-console.log("OUTPUT >> " + res.length);
+let res2 = res1;
+for (let i = 0; i < 10; ++i) { // 10 more iteraions on res1 == 50 iterations on input
+    res2 = lookAndSay(res2);
+}
+
+console.log("OUTPUT 1 >> " + res1.length);
+console.log("OUTPUT 2 >> " + res2.length);
